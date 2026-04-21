@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BlinkKart – 10 min delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#0c831f;--gd:#0a6b19;--gl:#e8f7eb;--g2:#d1edd6;
+  --acc:#fc8019;--acc2:#e5710f;
+  --bg:#f3f3f7;--card:#fff;
+  --txt:#1a1a2e;--muted:#6b7280;--muted2:#9ca3af;
+  --border:#e5e7eb;--border2:#d1d5db;
+  --r:12px;--r2:8px;
+  --red:#dc2626;--redbg:#fef2f2;--redborder:#fecaca;
+  --blue:#1d4ed8;--bluebg:#eff6ff;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+/* ── HEADER ── */
+.hdr{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.hdr-in{max-width:1160px;margin:0 auto;padding:0 1.5rem;height:62px;display:flex;align-items:center;gap:1rem}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-bolt{width:32px;height:32px;background:var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-txt{font-family:'Sora',sans-serif;font-size:21px;font-weight:800;color:var(--txt);letter-spacing:-0.5px}
+.logo-txt em{font-style:normal;color:var(--g)}
+.logo-tag{background:var(--gl);color:var(--g);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.loc{display:flex;align-items:center;gap:7px;flex:1;max-width:260px;background:var(--bg);border-radius:9px;padding:6px 12px;cursor:pointer;border:1px solid transparent;transition:border-color .15s}
+.loc:hover{border-color:var(--border2)}
+.loc-pin{font-size:14px}
+.loc-lbl{display:block;font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.loc-nm{display:block;font-size:13px;font-weight:600}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.admin-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);border-radius:9px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px}
+.admin-btn:hover{background:#fff;color:var(--txt);border-color:var(--txt)}
+.cart-btn{display:flex;align-items:center;gap:7px;background:var(--g);color:#fff;border:none;border-radius:10px;padding:9px 18px;cursor:pointer;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;white-space:nowrap;position:relative;transition:background .15s}
+.cart-btn:hover{background:var(--gd)}
+.cart-cnt{position:absolute;top:-8px;right:-8px;background:var(--acc);color:#fff;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;transition:transform .2s}
+.cart-cnt.pop{animation:pop .25s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+/* ── ERR BAR ── */
+.err-bar{background:var(--redbg);border-bottom:1px solid var(--redborder);color:var(--red);padding:10px 1.5rem;display:none;align-items:center;justify-content:space-between;font-size:13px;gap:12px}
+.err-bar.show{display:flex}
+.err-bar button{background:none;border:none;cursor:pointer;color:var(--red);font-size:16px;flex-shrink:0}
+
+/* ── MAIN ── */
+.main{max-width:1160px;margin:0 auto;padding:1.5rem}
+
+/* ── HERO ── */
+.hero{background:var(--g);border-radius:18px;padding:2rem 2.5rem;margin-bottom:1.75rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:130px;opacity:.1;pointer-events:none;line-height:1}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.18);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+.hero-h{font-family:'Sora',sans-serif;font-size:2rem;font-weight:800;color:#fff;line-height:1.18;margin-bottom:8px}
+.hero-h em{font-style:italic;opacity:.85}
+.hero-stats{display:flex;gap:18px;flex-wrap:wrap}
+.hero-stat{color:rgba(255,255,255,.75);font-size:13px;display:flex;align-items:center;gap:5px}
+.hero-stat-dot{width:4px;height:4px;background:rgba(255,255,255,.5);border-radius:50%}
+
+/* ── SEARCH ── */
+.search-wrap{margin-bottom:1.25rem;position:relative}
+.search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;opacity:.4;pointer-events:none}
+#search{width:100%;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 14px 10px 38px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--txt);outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--g)}
+#search::placeholder{color:var(--muted2)}
+
+/* ── CAT TABS ── */
+.cat-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.25rem}
+.cat-btn{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--muted);font-family:'DM Sans',sans-serif}
+.cat-btn.on,.cat-btn:hover{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ── SECTION HEADING ── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sec-title{font-family:'Sora',sans-serif;font-size:17px;font-weight:700}
+.sec-count{font-size:12px;color:var(--muted);font-weight:500}
+
+/* ── PRODUCT GRID ── */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.pcard{background:#fff;border-radius:var(--r);border:1px solid var(--border);padding:14px 13px 13px;display:flex;flex-direction:column;gap:8px;position:relative;transition:box-shadow .18s,transform .18s,border-color .18s;cursor:default}
+.pcard:hover{box-shadow:0 6px 22px rgba(0,0,0,.09);transform:translateY(-2px);border-color:var(--border2)}
+.pbadge{position:absolute;top:9px;left:9px;background:var(--acc);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px}
+.pbadge.new{background:#7c3aed}
+.pbadge.fresh{background:var(--g)}
+.pemoji{font-size:50px;text-align:center;padding:8px 0 2px;line-height:1;user-select:none}
+.pcat{display:block;font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.6px;margin-bottom:1px}
+.pname{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:2px;color:var(--txt)}
+.punit{font-size:11px;color:var(--muted)}
+.pfooter{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.pprice{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--txt)}
+.add-btn{background:#fff;border:1.5px solid var(--g);color:var(--g);border-radius:7px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all .15s;letter-spacing:.3px}
+.add-btn:hover{background:var(--g);color:#fff}
+.qc{display:flex;align-items:center;gap:4px}
+.qbtn{width:27px;height:27px;border-radius:6px;border:1.5px solid var(--g);background:#fff;color:var(--g);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;line-height:1;flex-shrink:0}
+.qbtn:hover{background:var(--g);color:#fff}
+.qnum{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;min-width:20px;text-align:center}
+.no-results{text-align:center;padding:3rem 1rem;color:var(--muted);grid-column:1/-1}
+.no-results-icon{font-size:42px;margin-bottom:10px;opacity:.35}
+
+/* ── OVERLAY ── */
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:199;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+
+/* ── CART SIDEBAR ── */
+.cart-side{position:fixed;top:0;right:0;bottom:0;width:370px;background:#fff;z-index:200;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 32px rgba(0,0,0,.13)}
+.cart-side.open{transform:translateX(0)}
+.ch{padding:1.2rem 1.2rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.ch-left{}
+.ch-title{font-family:'Sora',sans-serif;font-size:19px;font-weight:700}
+.ch-eta{font-size:11px;color:var(--g);font-weight:600;margin-top:3px;display:flex;align-items:center;gap:4px}
+.ch-eta-dot{width:6px;height:6px;background:var(--g);border-radius:50%;animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.cclose{background:var(--bg);border:none;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:background .15s}
+.cclose:hover{background:var(--border)}
+.cbody{flex:1;overflow-y:auto;padding:1rem}
+.cempty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.cempty-icon{font-size:52px;margin-bottom:12px;opacity:.3}
+.cempty p{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:4px}
+.cempty span{font-size:13px}
+.clist{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ci{display:flex;align-items:center;gap:9px;padding:10px;border-radius:10px;background:var(--bg);transition:background .15s}
+.ci:hover{background:#eef0f3}
+.ci-em{font-size:26px;flex-shrink:0;width:36px;text-align:center}
+.ci-info{flex:1;min-width:0}
+.ci-name{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-unit{display:block;font-size:10px;color:var(--muted)}
+.ci-price{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;min-width:44px;text-align:right;flex-shrink:0}
+.cart-promo{display:flex;align-items:center;gap:8px;margin-top:14px;padding:11px 12px;border:1.5px dashed var(--border2);border-radius:10px;font-size:12px;color:var(--muted)}
+.promo-icon{font-size:15px}
+.promo-apply{margin-left:auto;background:none;border:none;color:var(--g);font-weight:700;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif}
+
+/* ── CART FOOTER ── */
+.cfooter{padding:1rem 1.2rem;border-top:1px solid var(--border);flex-shrink:0}
+.bill-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:9px}
+.brow{display:flex;justify-content:space-between;font-size:13px;padding:3.5px 0;color:var(--txt)}
+.brow.tot{font-weight:700;font-size:16px;padding-top:10px;border-top:1px solid var(--border);margin-top:7px}
+.free-tag{color:var(--g);font-weight:700}
+.free-note{font-size:11px;color:var(--g);font-weight:600;background:var(--gl);padding:5px 10px;border-radius:7px;margin:6px 0;display:flex;align-items:center;gap:5px}
+.pob{width:100%;background:var(--g);color:#fff;border:none;border-radius:12px;padding:15px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;margin-top:13px}
+.pob:hover:not(:disabled){background:var(--gd)}
+.pob:disabled{opacity:.7;cursor:not-allowed;justify-content:center;gap:10px}
+.pob-arrow{font-size:18px;transition:transform .15s}
+.pob:hover:not(:disabled) .pob-arrow{transform:translateX(3px)}
+.spin{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;display:inline-block;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.onote{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}
+
+/* ── SUCCESS OVERLAY ── */
+.suc-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.suc-wrap.show{display:flex}
+.suc-card{background:#fff;border-radius:22px;padding:2.5rem 2rem;text-align:center;max-width:360px;width:100%;animation:slideUp .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+.suc-check{width:72px;height:72px;background:var(--gl);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px}
+.suc-h{font-family:'Sora',sans-serif;font-size:23px;font-weight:800;margin-bottom:6px}
+.suc-id{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:14px;font-family:'Sora',sans-serif;letter-spacing:.5px}
+.suc-m{font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.iot-row{display:inline-flex;align-items:center;gap:8px;background:var(--gl);border-radius:20px;padding:8px 16px;font-size:12px;font-weight:600;color:var(--g);margin-bottom:20px}
+.led{width:10px;height:10px;background:#22c55e;border-radius:50%;animation:pulse-led 1s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse-led{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.65)}50%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
+.iot-log-mini{background:#0f1117;border-radius:9px;padding:10px 12px;text-align:left;margin-bottom:20px;font-family:monospace;font-size:11px;color:#4ade80;line-height:1.7;max-height:100px;overflow-y:auto}
+.log-dim{color:#6b7280}
+.suc-btn{background:var(--g);color:#fff;border:none;border-radius:10px;padding:12px 30px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
+.suc-btn:hover{background:var(--gd)}
+
+/* ── ADMIN PANEL ── */
+.admin-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:250;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+.admin-wrap.show{display:flex}
+.admin-panel{background:#fff;border-radius:18px;width:100%;max-width:760px;margin:auto;overflow:hidden}
+.admin-hdr{background:#0f1117;padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.admin-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.admin-title .dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulse-led 1.2s ease-in-out infinite}
+.admin-close{background:rgba(255,255,255,.1);border:none;color:#fff;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.admin-body{padding:1.5rem}
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.astat{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
+.astat-val{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--txt);margin-bottom:2px}
+.astat-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.admin-section-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;margin-bottom:10px;color:var(--txt)}
+.admin-log{background:#0f1117;border-radius:10px;padding:12px 14px;font-family:monospace;font-size:11px;color:#4ade80;line-height:1.8;max-height:200px;overflow-y:auto;margin-bottom:1.25rem}
+.log-ts{color:#6b7280}
+.log-ok{color:#4ade80}
+.log-warn{color:#fbbf24}
+.log-info{color:#60a5fa}
+.orders-list{display:flex;flex-direction:column;gap:8px}
+.order-row{background:var(--bg);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;font-size:13px}
+.order-id{font-family:'Sora',sans-serif;font-weight:700;font-size:12px;color:var(--g);min-width:75px}
+.order-items{flex:1;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-total{font-family:'Sora',sans-serif;font-weight:700;min-width:50px;text-align:right}
+.order-status{background:var(--gl);color:var(--g);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
+.no-orders{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
+
+/* ── IOT TERMINAL ── */
+.iot-terminal{background:#0f1117;border-radius:12px;padding:14px 16px;margin-top:1.5rem;font-family:monospace;font-size:11.5px;color:#e2e8f0;line-height:1.9;min-height:80px}
+.iot-terminal .t-hdr{display:flex;align-items:center;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #1e2533}
+.t-dot{width:10px;height:10px;border-radius:50%}
+.t-dot.r{background:#ff5f57}.t-dot.y{background:#ffbd2e}.t-dot.g{background:#28c840}
+.t-title{color:#6b7280;font-size:10px;letter-spacing:.5px;text-transform:uppercase;margin-left:4px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .cart-side{width:100vw}
+  .loc{display:none}
+  .hero-h{font-size:1.4rem}
+  .pgrid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .admin-stats{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="logo">
+      <div class="logo-bolt">⚡</div>
+      <span class="logo-txt">blink<em>kart</em></span>
+      <span class="logo-tag">10 min</span>
+    </div>
+    <div class="loc">
+      <span class="loc-pin">📍</span>
+      <div>
+        <span class="loc-lbl">Delivering to</span>
+        <span class="loc-nm">Sector 18, Noida</span>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="admin-btn" onclick="openAdmin()">⚙ Backend</button>
+      <button class="cart-btn" onclick="openCart()">
+        🛒 My Cart
+        <span class="cart-cnt" id="cart-cnt" style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ERROR BAR -->
+<div class="err-bar" id="err-bar">
+  <span id="err-msg">⚠ Something went wrong.</span>
+  <button onclick="closeErr()">✕</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <div class="hero">
+    <div class="hero-bg">⚡</div>
+    <div class="hero-badge">⚡ Delivery in 10 minutes</div>
+    <h1 class="hero-h">Fresh groceries,<br>delivered in <em>a flash</em></h1>
+    <div class="hero-stats">
+      <span class="hero-stat">22 products</span>
+      <span class="hero-stat-dot"></span>
+      <span class="hero-stat">No minimum order</span>
+      <span class="hero-stat-dot"></span>
+      <span class="hero-stat">Free delivery over ₹199</span>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search groceries, snacks, veggies…" oninput="renderGrid()"/>
+  </div>
+
+  <div class="cat-row" id="cat-row"></div>
+
+  <div class="sec-hd">
+    <span class="sec-title" id="sec-title">All Products</span>
+    <span class="sec-count" id="sec-count"></span>
+  </div>
+
+  <div class="pgrid" id="pgrid"></div>
+
+  <!-- IoT Terminal (always visible at bottom) -->
+  <div class="iot-terminal" id="iot-terminal" style="margin-top:2rem">
+    <div class="t-hdr">
+      <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
+      <span class="t-title">IoT Bridge – Python GPIO Simulator</span>
+    </div>
+    <div id="iot-log"><span style="color:#6b7280">Waiting for orders… LED on GPIO pin 18 is idle.</span></div>
+  </div>
+</main>
+
+<!-- CART OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<!-- CART SIDEBAR -->
+<aside class="cart-side" id="cart-side">
+  <div class="ch">
+    <div class="ch-left">
+      <div class="ch-title">My Cart</div>
+      <div class="ch-eta" id="ch-eta" style="display:none">
+        <span class="ch-eta-dot"></span> Delivery in ~10 mins
+      </div>
+    </div>
+    <button class="cclose" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cbody" id="cart-body"></div>
+  <div class="cfooter" id="cart-footer" style="display:none">
+    <div class="bill-title">Bill details</div>
+    <div class="brow"><span>Item total</span><span id="b-sub">₹0</span></div>
+    <div class="brow"><span>Delivery fee</span><span id="b-del">₹25</span></div>
+    <div id="free-note" class="free-note" style="display:none">🎉 You saved ₹25 on delivery!</div>
+    <div class="brow tot"><span>To pay</span><span id="b-total">₹0</span></div>
+    <button class="pob" id="pob" onclick="placeOrder()">
+      <span id="pob-txt">Place Order</span>
+      <span class="pob-arrow" id="pob-arrow">→</span>
+    </button>
+    <div class="onote">⚡ Order arrives in ~10 minutes</div>
+  </div>
+</aside>
+
+<!-- SUCCESS MODAL -->
+<div class="suc-wrap" id="suc-wrap">
+  <div class="suc-card">
+    <div class="suc-check">✅</div>
+    <div class="suc-h">Order Placed!</div>
+    <div class="suc-id" id="suc-id">BK-1001</div>
+    <div class="suc-m" id="suc-m">Your groceries are on their way.</div>
+    <div class="iot-row"><span class="led"></span><span>LED signal sent · GPIO 18 triggered</span></div>
+    <div class="iot-log-mini" id="suc-log"></div>
+    <button class="suc-btn" onclick="dismissSuccess()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ADMIN / BACKEND PANEL -->
+<div class="admin-wrap" id="admin-wrap">
+  <div class="admin-panel">
+    <div class="admin-hdr">
+      <div class="admin-title">
+        <span class="dot"></span>
+        BlinkKart Backend · Express + Python IoT Bridge
+      </div>
+      <button class="admin-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="admin-body">
+      <div class="admin-stats">
+        <div class="astat"><div class="astat-val" id="as-orders">0</div><div class="astat-lbl">Orders</div></div>
+        <div class="astat"><div class="astat-val" id="as-rev">₹0</div><div class="astat-lbl">Revenue</div></div>
+        <div class="astat"><div class="astat-val" id="as-items">0</div><div class="astat-lbl">Items Sold</div></div>
+        <div class="astat"><div class="astat-val" id="as-led">0</div><div class="astat-lbl">LED Signals</div></div>
+      </div>
+
+      <div class="admin-section-title">📡 Server log (Node.js / Express)</div>
+      <div class="admin-log" id="admin-log">
+        <span class="log-info">[INFO]</span> Server started on <span class="log-ok">http://localhost:4000</span><br>
+        <span class="log-info">[INFO]</span> <span class="log-ok">GET /api/products</span> → 22 products loaded<br>
+        <span class="log-info">[INFO]</span> CORS enabled for <span class="log-ok">localhost:3000</span><br>
+        <span class="log-dim">[WAIT]</span> Listening for POST <span class="log-warn">/api/place-order</span>…
+      </div>
+
+      <div class="admin-section-title">📦 Order history</div>
+      <div class="orders-list" id="orders-list">
+        <div class="no-orders">No orders yet. Place one to see it here!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   MOCK DATABASE
+══════════════════════════════════════════════════ */
+const DB = {
+  products: [
+    {id:1, name:"Fresh Tomatoes",      emoji:"🍅", cat:"Vegetables", price:29,  unit:"500g",   badge:"fresh",   badgeText:"Farm Fresh"},
+    {id:2, name:"Baby Spinach",        emoji:"🥬", cat:"Vegetables", price:45,  unit:"200g",   badge:null,      badgeText:null},
+    {id:3, name:"Onions",              emoji:"🧅", cat:"Vegetables", price:35,  unit:"1 kg",   badge:"hot",     badgeText:"Best Value"},
+    {id:4, name:"Carrots",             emoji:"🥕", cat:"Vegetables", price:39,  unit:"500g",   badge:null,      badgeText:null},
+    {id:5, name:"Bananas",             emoji:"🍌", cat:"Fruits",     price:49,  unit:"6 pcs",  badge:null,      badgeText:null},
+    {id:6, name:"Royal Gala Apples",   emoji:"🍎", cat:"Fruits",     price:99,  unit:"4 pcs",  badge:"hot",     badgeText:"Imported"},
+    {id:7, name:"Lemons",              emoji:"🍋", cat:"Fruits",     price:25,  unit:"4 pcs",  badge:null,      badgeText:null},
+    {id:8, name:"Full Cream Milk",     emoji:"🥛", cat:"Dairy",      price:62,  unit:"1 L",    badge:"fresh",   badgeText:"Daily Fresh"},
+    {id:9, name:"Amul Butter",         emoji:"🧈", cat:"Dairy",      price:55,  unit:"100g",   badge:null,      badgeText:null},
+    {id:10,name:"Farm Eggs",           emoji:"🥚", cat:"Dairy",      price:89,  unit:"12 pcs", badge:"fresh",   badgeText:"Free Range"},
+    {id:11,name:"Curd / Dahi",         emoji:"🫙", cat:"Dairy",      price:40,  unit:"400g",   badge:null,      badgeText:null},
+    {id:12,name:"Lay's Classic",       emoji:"🥔", cat:"Snacks",     price:20,  unit:"26g",    badge:null,      badgeText:null},
+    {id:13,name:"Digestive Biscuits",  emoji:"🍪", cat:"Snacks",     price:35,  unit:"250g",   badge:"hot",     badgeText:"Bestseller"},
+    {id:14,name:"Instant Noodles",     emoji:"🍜", cat:"Snacks",     price:14,  unit:"70g",    badge:null,      badgeText:null},
+    {id:15,name:"Dark Chocolate",      emoji:"🍫", cat:"Snacks",     price:75,  unit:"55g",    badge:"new",     badgeText:"New"},
+    {id:16,name:"Roasted Peanuts",     emoji:"🥜", cat:"Snacks",     price:55,  unit:"200g",   badge:null,      badgeText:null},
+    {id:17,name:"Basmati Rice",        emoji:"🍚", cat:"Staples",    price:149, unit:"1 kg",   badge:"hot",     badgeText:"Premium"},
+    {id:18,name:"Toor Dal",            emoji:"🫘", cat:"Staples",    price:99,  unit:"500g",   badge:null,      badgeText:null},
+    {id:19,name:"Sunflower Oil",       emoji:"🛢",  cat:"Staples",    price:179, unit:"1 L",    badge:null,      badgeText:null},
+    {id:20,name:"Wheat Atta",          emoji:"🌾", cat:"Staples",    price:85,  unit:"1 kg",   badge:"fresh",   badgeText:"Stone Ground"},
+    {id:21,name:"Orange Juice",        emoji:"🍊", cat:"Beverages",  price:110, unit:"1 L",    badge:"new",     badgeText:"No Sugar"},
+    {id:22,name:"Green Tea",           emoji:"🍵", cat:"Beverages",  price:130, unit:"25 bags",badge:null,      badgeText:null},
+  ],
+  orders: [],
+  ledSignals: 0,
+  orderCounter: 1000
+};
+
+const CATS = ["All", ...[...new Set(DB.products.map(p=>p.cat))]];
+
+/* ══════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════ */
+let cart = {};
+let activeCat = "All";
+let placing = false;
+
+/* ══════════════════════════════════════════════════
+   SIMULATED BACKEND API
+══════════════════════════════════════════════════ */
+const API = {
+  getProducts() {
+    serverLog("info","GET /api/products","200 OK – 22 products");
+    return { success:true, products:DB.products };
+  },
+
+  async placeOrder(payload) {
+    serverLog("info","POST /api/place-order","Processing...");
+    await delay(600);
+
+    // Validate
+    if (!payload.items || payload.items.length === 0) {
+      serverLog("warn","POST /api/place-order","400 Bad Request – empty cart");
+      return { success:false, message:"Cart is empty." };
+    }
+
+    // Create order
+    const orderId = "BK-" + (++DB.orderCounter);
+    const deliveryFee = payload.total > 199 ? 0 : 25;
+    const order = {
+      orderId,
+      items: payload.items,
+      subtotal: payload.total,
+      deliveryFee,
+      grandTotal: payload.total + deliveryFee,
+      status: "confirmed",
+      placedAt: new Date().toLocaleTimeString()
+    };
+    DB.orders.unshift(order);
+
+    serverLog("ok","POST /api/place-order",`201 Created – ${orderId}`);
+    serverLog("info","Spawning Python","python3 iot/led_trigger.py ...");
+
+    // Simulate IoT
+    await delay(200);
+    const iotLog = await this.triggerIoT(order);
+    DB.ledSignals++;
+
+    return { success:true, orderId, message:`Order ${orderId} confirmed! Arriving in ~10 minutes ⚡`, iotLog, order };
+  },
+
+  async triggerIoT(order) {
+    const lines = [];
+    const ts = () => new Date().toLocaleTimeString();
+    lines.push(`<span class="log-dim">[${ts()}]</span> <span class="log-info">Detecting hardware mode…</span>`);
+    await delay(150);
+    lines.push(`<span class="log-dim">[${ts()}]</span> Mode: <span class="log-warn">SIMULATION</span> (no Raspberry Pi detected)`);
+    await delay(100);
+    lines.push(`<span class="log-dim">[${ts()}]</span> Order: <span class="log-ok">${order.orderId}</span> · Items: <span class="log-ok">${order.items.length}</span> · ₹${order.grandTotal}`);
+    await delay(80);
+    lines.push(`<span class="log-dim">[${ts()}]</span> GPIO setup → pin <span class="log-warn">18</span> as OUTPUT`);
+
+    for (let i=1;i<=3;i++){
+      await delay(300);
+      lines.push(`<span class="log-dim">[${ts()}]</span> 🟢 GPIO 18 → <span class="log-ok">HIGH</span>  (LED ON – pulse ${i}/3)`);
+      pushIoTLog(lines[lines.length-1]);
+      await delay(250);
+      lines.push(`<span class="log-dim">[${ts()}]</span> ⚫ GPIO 18 → <span style="color:#94a3b8">LOW</span>   (LED OFF)`);
+      pushIoTLog(lines[lines.length-1]);
+    }
+    await delay(200);
+    lines.push(`<span class="log-dim">[${ts()}]</span> <span class="log-ok">✓ Signal complete. GPIO cleaned up. Delivery dispatched!</span>`);
+    pushIoTLog(lines[lines.length-1]);
+    return lines;
+  }
+};
+
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ══════════════════════════════════════════════════
+   LOGGING HELPERS
+══════════════════════════════════════════════════ */
+const serverLogs = [];
+function serverLog(type, route, msg){
+  const ts = new Date().toLocaleTimeString();
+  const cls = type==="ok"?"log-ok":type==="warn"?"log-warn":type==="info"?"log-info":"log-dim";
+  const tag = type==="ok"?"[200]":type==="warn"?"[WARN]":"[INFO]";
+  const line = `<span class="log-ts">[${ts}]</span> <span class="${cls}">${tag}</span> ${route} → ${msg}`;
+  serverLogs.push(line);
+  const el = document.getElementById("admin-log");
+  if(el){ el.innerHTML = serverLogs.join("<br>"); el.scrollTop = el.scrollHeight; }
+}
+
+function pushIoTLog(line){
+  const el = document.getElementById("iot-log");
+  if(!el) return;
+  const existing = el.innerHTML;
+  if(existing.includes("Waiting")) el.innerHTML = "";
+  el.innerHTML += line + "<br>";
+  el.parentElement.scrollTop = el.parentElement.scrollHeight;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER CATEGORIES
+══════════════════════════════════════════════════ */
+function renderCats(){
+  document.getElementById("cat-row").innerHTML = CATS.map(c=>
+    `<button class="cat-btn${c===activeCat?" on":""}" onclick="setCat('${c}')">${c}</button>`
+  ).join("");
+}
+function setCat(c){ activeCat=c; document.getElementById("search").value=""; renderCats(); renderGrid(); }
+
+/* ══════════════════════════════════════════════════
+   RENDER PRODUCT GRID
+══════════════════════════════════════════════════ */
+function renderGrid(){
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  let prods = activeCat==="All" ? DB.products : DB.products.filter(p=>p.cat===activeCat);
+  if(q) prods = prods.filter(p=>p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
+
+  document.getElementById("sec-title").textContent = activeCat==="All"?"All Products":activeCat;
+  document.getElementById("sec-count").textContent = prods.length+" items";
+
+  if(prods.length===0){
+    document.getElementById("pgrid").innerHTML=`<div class="no-results"><div class="no-results-icon">🔍</div><p style="font-weight:600;color:var(--txt)">No results for "${q}"</p><p style="font-size:13px;margin-top:4px">Try a different keyword</p></div>`;
+    return;
+  }
+
+  document.getElementById("pgrid").innerHTML = prods.map(p=>{
+    const qty = cart[p.id]||0;
+    const badgeHTML = p.badge ? `<div class="pbadge ${p.badge}">${p.badgeText}</div>` : "";
+    const ctrl = qty===0
+      ? `<button class="add-btn" onclick="addItem(${p.id})">ADD</button>`
+      : `<div class="qc"><button class="qbtn" onclick="removeItem(${p.id})">−</button><span class="qnum">${qty}</span><button class="qbtn" onclick="addItem(${p.id})">+</button></div>`;
+    return `<div class="pcard">
+      ${badgeHTML}
+      <div class="pemoji">${p.emoji}</div>
+      <div>
+        <span class="pcat">${p.cat}</span>
+        <div class="pname">${p.name}</div>
+        <div class="punit">${p.unit}</div>
+      </div>
+      <div class="pfooter">
+        <span class="pprice">₹${p.price}</span>
+        ${ctrl}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ══════════════════════════════════════════════════
+   CART OPERATIONS
+══════════════════════════════════════════════════ */
+function addItem(id){
+  cart[id]=(cart[id]||0)+1;
+  updateAll();
+  openCart();
+  popBadge();
+}
+function removeItem(id){
+  if(!cart[id]) return;
+  if(--cart[id]===0) delete cart[id];
+  updateAll();
+}
+function getCartItems(){ return Object.entries(cart).map(([id,qty])=>({...DB.products.find(p=>p.id===+id),qty})); }
+function cartSubtotal(){ return getCartItems().reduce((s,i)=>s+i.price*i.qty,0); }
+function cartCount(){ return getCartItems().reduce((s,i)=>s+i.qty,0); }
+
+function updateAll(){ renderGrid(); renderCartBody(); updateBadge(); }
+
+function updateBadge(){
+  const cnt=cartCount(), el=document.getElementById("cart-cnt");
+  el.textContent=cnt; el.style.display=cnt>0?"flex":"none";
+}
+function popBadge(){
+  const el=document.getElementById("cart-cnt");
+  el.classList.remove("pop");
+  void el.offsetWidth;
+  el.classList.add("pop");
+}
+
+function renderCartBody(){
+  const items=getCartItems(), sub=cartSubtotal(), del=sub>199?0:25, total=sub+del;
+  const body=document.getElementById("cart-body"), footer=document.getElementById("cart-footer"), eta=document.getElementById("ch-eta");
+
+  if(items.length===0){
+    body.innerHTML=`<div class="cempty"><div class="cempty-icon">🛒</div><p>Your cart is empty</p><span>Add items to get started!</span></div>`;
+    footer.style.display="none"; eta.style.display="none"; return;
+  }
+
+  eta.style.display="flex"; footer.style.display="block";
+  body.innerHTML=`<ul class="clist">${items.map(i=>`
+    <li class="ci">
+      <span class="ci-em">${i.emoji}</span>
+      <div class="ci-info"><span class="ci-name">${i.name}</span><span class="ci-unit">${i.unit}</span></div>
+      <div class="qc">
+        <button class="qbtn" style="width:24px;height:24px;font-size:14px" onclick="removeItem(${i.id})">−</button>
+        <span class="qnum" style="font-size:13px">${i.qty}</span>
+        <button class="qbtn" style="width:24px;height:24px;font-size:14px" onclick="addItem(${i.id})">+</button>
+      </div>
+      <span class="ci-price">₹${i.price*i.qty}</span>
+    </li>`).join("")}
+  </ul>
+  <div class="cart-promo"><span class="promo-icon">🎁</span><span>Apply coupon code</span><button class="promo-apply">Apply</button></div>`;
+
+  document.getElementById("b-sub").textContent="₹"+sub;
+  document.getElementById("b-del").textContent=del===0?"FREE":"₹"+del;
+  document.getElementById("b-del").className=del===0?"free-tag":"";
+  document.getElementById("free-note").style.display=del===0?"flex":"none";
+  document.getElementById("b-total").textContent="₹"+total;
+  document.getElementById("pob-txt").textContent="Place Order · ₹"+total;
+}
+
+/* ══════════════════════════════════════════════════
+   PLACE ORDER FLOW
+══════════════════════════════════════════════════ */
+async function placeOrder(){
+  if(placing||getCartItems().length===0) return;
+  placing=true;
+
+  const btn=document.getElementById("pob"), txt=document.getElementById("pob-txt"), arr=document.getElementById("pob-arrow");
+  btn.disabled=true;
+  txt.innerHTML='<span class="spin"></span> Placing Order…';
+  arr.style.display="none";
+
+  const payload = { items:getCartItems(), total:cartSubtotal(), timestamp:new Date().toISOString() };
+  const result = await API.placeOrder(payload);
+
+  placing=false; btn.disabled=false; arr.style.display="";
+
+  if(result.success){
+    // Show success
+    document.getElementById("suc-id").textContent=result.orderId;
+    document.getElementById("suc-m").textContent=result.message;
+    document.getElementById("suc-log").innerHTML=result.iotLog.join("<br>");
+    document.getElementById("suc-wrap").classList.add("show");
+    cart={}; closeCart(); updateAll();
+    updateAdminPanel();
+  } else {
+    showErr(result.message||"Something went wrong.");
+    txt.textContent="Place Order"; 
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════════════════════ */
+function updateAdminPanel(){
+  const orders=DB.orders, rev=orders.reduce((s,o)=>s+o.grandTotal,0), items=orders.reduce((s,o)=>s+o.items.reduce((a,i)=>a+i.qty,0),0);
+  document.getElementById("as-orders").textContent=orders.length;
+  document.getElementById("as-rev").textContent="₹"+rev;
+  document.getElementById("as-items").textContent=items;
+  document.getElementById("as-led").textContent=DB.ledSignals;
+
+  const list=document.getElementById("orders-list");
+  if(orders.length===0){
+    list.innerHTML=`<div class="no-orders">No orders yet. Place one to see it here!</div>`;
+    return;
+  }
+  list.innerHTML=orders.map(o=>`
+    <div class="order-row">
+      <span class="order-id">${o.orderId}</span>
+      <span class="order-items">${o.items.map(i=>i.name).join(", ")}</span>
+      <span class="order-total">₹${o.grandTotal}</span>
+      <span class="order-status">✓ Confirmed</span>
+    </div>`).join("");
+}
+
+/* ══════════════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════════════ */
+function openCart(){ document.getElementById("cart-side").classList.add("open"); document.getElementById("overlay").classList.add("show"); }
+function closeCart(){ document.getElementById("cart-side").classList.remove("open"); document.getElementById("overlay").classList.remove("show"); }
+function openAdmin(){ updateAdminPanel(); document.getElementById("admin-wrap").classList.add("show"); }
+function closeAdmin(){ document.getElementById("admin-wrap").classList.remove("show"); }
+function dismissSuccess(){ document.getElementById("suc-wrap").classList.remove("show"); }
+function showErr(msg){ document.getElementById("err-msg").textContent="⚠ "+msg; document.getElementById("err-bar").classList.add("show"); }
+function closeErr(){ document.getElementById("err-bar").classList.remove("show"); }
+
+/* ══════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════ */
+renderCats();
+renderGrid();
+renderCartBody();
+serverLog("ok","/health","Server is healthy");
+</script>
+</body>
+</html>
